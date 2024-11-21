@@ -189,17 +189,17 @@ void Board::displayBoard()
     }
 }
 
-// bool Board::movePlayer(int player_index)
-// {
-//     // Increment player position
-//     _player_position[player_index]++;
-//     if (_player_position[player_index] == _BOARD_SIZE - 1)
-//     {
-//         // Player reached last tile
-//         return true;
-//     }
-//     return false;
-// }
+bool Board::movePlayer(int player_index)
+{
+    // Increment player position
+    _player_position[player_index]++;
+    if (_player_position[player_index] == _BOARD_SIZE - 1)
+    {
+        // Player reached last tile
+        return true;
+    }
+    return false;
+}
 
 // int Board::getPlayerPosition(int player_index) const
 // {
