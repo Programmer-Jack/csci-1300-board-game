@@ -1,6 +1,11 @@
 {
     "files.associations": {
         "string": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "*.tcc": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "vector": "cpp"
     }
 }

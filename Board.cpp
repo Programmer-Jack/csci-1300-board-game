@@ -33,15 +33,18 @@ void Board::initializeTiles(int player_index)
     // Keep track of green tile positions to ensure we place exactly 30 greens
     for (int i = 0; i < total_tiles; i++)
     {
-        if (i == total_tiles - 1) {
+        if (i == total_tiles - 1)
+        {
             // Set the last tile as Orange for "Pride Rock"
             temp.color = 'O';
         } 
-        else if (i == 0) {
-            // Set the last tile as Orange for "Pride Rock"
+        else if (i == 0)
+        {
+            // Set the first tile as Yellow for the origin
             temp.color = 'Y';
         } 
-        else if (green_count < 30 && (rand() % (total_tiles - i) < 30 - green_count)) {
+        else if (green_count < 30 && (rand() % (total_tiles - i) < 30 - green_count))
+        {
             temp.color = 'G';
             green_count++;
         }
@@ -189,17 +192,17 @@ void Board::displayBoard()
     }
 }
 
-// bool Board::movePlayer(int player_index)
-// {
-//     // Increment player position
-//     _player_position[player_index]++;
-//     if (_player_position[player_index] == _BOARD_SIZE - 1)
-//     {
-//         // Player reached last tile
-//         return true;
-//     }
-//     return false;
-// }
+bool Board::movePlayer(int player_index)
+{
+    // Increment player position
+    _player_position[player_index]++;
+    if (_player_position[player_index] == _BOARD_SIZE - 1)
+    {
+        // Player reached last tile
+        return true;
+    }
+    return false;
+}
 
 // int Board::getPlayerPosition(int player_index) const
 // {
