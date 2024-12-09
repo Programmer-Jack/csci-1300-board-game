@@ -8,24 +8,49 @@
 
 using namespace std;
 
-bool tryGetCharactersFromFile(vector<string> outputList)
+vector<Player> tryGetCharacterListFromFile()
 {
+    vector<Player> player_character_list; // Create empty list to be added to
+
     ifstream input_file("characters.txt");
-    string current_line;
 
     if (!input_file.fail())
     {
-        //Split Splitter;
+        string current_line;
+        int line_count = 0;
+
+        const int STAT_COUNT = 6;
+        string current_line_stats[STAT_COUNT];
 
         while (getline(input_file, current_line))
         {
-            //Splitter.splitPlayers(current_line, '|', outputList);
+             // Skip first line of file
+            if (line_count == 0)
+            {
+                line_count++;
+                continue;
+            }
+
+            // Split each line's contents into statistic entries in the statistic array
+            Split::split(current_line, '|', current_line_stats, STAT_COUNT);
+
+            // Construct new Player
+            string new_name = current_line_stats[0];
+            int new_strength = stoi(current_line_stats[2]);
+            int new_stamina = stoi(current_line_stats[3]);
+            int new_wisdom = stoi(current_line_stats[4]);
+            Player new_player = Player(new_name, new_strength, new_stamina, new_wisdom);
+
+            // Add player character to list
+            player_character_list.push_back(new_player);
+
+            line_count++;
         }
     }
 
     input_file.close();
 
-    return true;
+    return player_character_list;
 }
 
 void displayPlayerSet(vector<Player> characters)
@@ -78,10 +103,36 @@ bool gameCycle(Board board)
     }
 }
 
+Player getPlayerFromOptions(vector<Player> options, string prompt)
+{
+    int used_index = -1;
+    while (true)
+    {
+        string input_name;
+        cout << prompt;
+        cin >> input_name;
+
+        for (unsigned int i = 0; i < options.size(); i++)
+        {
+            if (input_name == options.at(i).getName())
+            {
+                return options.at(i);
+            }
+        }
+        cout << "\nThat lion does not exist.\n";
+    }
+}
+
 int main()
 {
-    Board board(2);
-    gameCycle(board);
+    vector<Player> player_character_list = tryGetCharacterListFromFile();
+    displayPlayerSet(player_character_list);
+
+    Player player_1 = getPlayerFromOptions(player_character_list, "\nPLAYER 1, please enter the name of your lion: ");
+    Player player_2 = getPlayerFromOptions(player_character_list, "\nPLAYER 2, please enter the name of your lion: ");
+
+    // Board board(2);
+    // gameCycle(board);
 
     return 0;
 }
