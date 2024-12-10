@@ -13,7 +13,7 @@ private:
 
 public:
     Player();
-    Player(string name, int strength, int stamina, int wisdom);
+    Player(string name, int age, int strength, int stamina, int wisdom, int pride_points);
 
     string getName();
     int getStrength();

@@ -24,7 +24,7 @@ vector<Player> tryGetCharacterListFromFile()
 
         while (getline(input_file, current_line))
         {
-             // Skip first line of file
+            // Skip first line of file
             if (line_count == 0)
             {
                 line_count++;
@@ -36,10 +36,12 @@ vector<Player> tryGetCharacterListFromFile()
 
             // Construct new Player
             string new_name = current_line_stats[0];
+            int new_age = stoi(current_line_stats[1]);
             int new_strength = stoi(current_line_stats[2]);
             int new_stamina = stoi(current_line_stats[3]);
             int new_wisdom = stoi(current_line_stats[4]);
-            Player new_player = Player(new_name, new_strength, new_stamina, new_wisdom);
+            int new_pride_points = stoi(current_line_stats[5]);
+            Player new_player = Player(new_name, new_age, new_strength, new_stamina, new_wisdom, new_pride_points);
 
             // Add player character to list
             player_character_list.push_back(new_player);
@@ -61,51 +63,8 @@ void displayPlayerSet(vector<Player> characters)
     }
 }
 
-bool gameCycle(Board board)
-{
-    int turn_index = 0;
-    int player_turn_index = 0;
-    //bool win = false;
-
-    while (true)
-    {
-        cout << "\n\n*****START GAME CYCLE******\n\n";
-
-        cout << "\n\nDISPLAY BOARD\n\n";
-        board.displayBoard();
-
-        cout << "\n\nGET INPUT\n\n";
-        string input;
-        cin >> input;
-        
-        if (input == "move")
-        {
-            bool win = board.movePlayer(player_turn_index);
-
-            if (win) return win;
-
-            turn_index++;
-        }
-        else if (input == "exit")
-        {
-            return false;
-        }
-        else
-        {
-            cout << "INVALID INPUT" << endl;
-        }
-
-        player_turn_index = turn_index % 2;
-
-        cout << "Round " << turn_index << "; Player " << player_turn_index << endl;
-
-        cout << "\n\n*****END OF GAME CYCLE*****\n\n";
-    }
-}
-
 Player getPlayerFromOptions(vector<Player> options, string prompt)
 {
-    int used_index = -1;
     while (true)
     {
         string input_name;
@@ -123,16 +82,101 @@ Player getPlayerFromOptions(vector<Player> options, string prompt)
     }
 }
 
+bool gameCycle(Board board);
+
+Player choosePlayerPath(Player target_player, string prompt);
+
 int main()
 {
     vector<Player> player_character_list = tryGetCharacterListFromFile();
     displayPlayerSet(player_character_list);
 
-    Player player_1 = getPlayerFromOptions(player_character_list, "\nPLAYER 1, please enter the name of your lion: ");
-    Player player_2 = getPlayerFromOptions(player_character_list, "\nPLAYER 2, please enter the name of your lion: ");
+    Player player_1 = getPlayerFromOptions(player_character_list, "\nPLAYER 1, enter the name of your lion: ");
+    player_1.printStats();
+    Player player_2 = getPlayerFromOptions(player_character_list, "\nPLAYER 2, enter the name of your lion: ");
+    player_2.printStats();
 
-    // Board board(2);
-    // gameCycle(board);
+    player_1 = choosePlayerPath(player_1, "Player 1, select a path:\n"
+                                          "0: Cub Training\n"
+                                          "1: Straight to the Pride Lands\n");
+    player_2 = choosePlayerPath(player_2, "Player 2, select a path:\n"
+                                          "0: Cub Training\n"
+                                          "1: Straight to the Pride Lands\n");
+
+    Board board(2);
+    gameCycle(board);
 
     return 0;
+}
+
+bool gameCycle(Board board)
+{
+    int turn_index = 1;
+    int player_turn_index = 0;
+
+    while (true)
+    {
+        cout << "ROUND " << turn_index << endl
+             << "PLAYER " << player_turn_index + 1 << "'s TURN\n";
+
+        board.displayBoard();
+
+        cout << "\nSelect a command:\n"
+                "0: move forward\n"
+                "1: exit game\n";
+        string input;
+        cin >> input;
+
+        switch (stoi(input))
+        {
+            case 0:
+            {
+                turn_index++;
+                cout << "\nSPINNING FOR RANDOM FORWARD MOVEMENT...\n\n";
+
+                int rand_move_spaces = rand() % 6 + 1;
+
+                cout << "SPINNER RESULT: Move " << rand_move_spaces << " spaces!" << endl;
+
+                for (int i = 0; i < rand_move_spaces; i++)
+                {
+                    bool win = board.movePlayer(player_turn_index);
+                    if (win)
+                        return true;
+                }
+                break;
+            }
+            case 1:
+            {
+                cout << "\nEXIT GAME";
+                return false;
+            }
+            default:
+            {
+                cout << "INVALID COMMAND\n";
+                break;
+            }
+        }
+    
+        player_turn_index = turn_index % 2;
+    }
+
+    return false;
+}
+
+Player choosePlayerPath(Player target_player, string prompt)
+{
+    cout << prompt;
+    string input;
+    cin >> input;
+
+    switch (stoi(input))
+    {
+        case 0:
+            target_player.trainCub(500, 500, 1000);
+        case 1:
+            target_player.toPrideLands();
+    }
+
+    return target_player;
 }

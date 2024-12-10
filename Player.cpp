@@ -18,14 +18,14 @@ Player::Player()
     _age = 1;
 }
 
-Player::Player(string name, int strength, int stamina, int wisdom)
+Player::Player(string name, int age, int strength, int stamina, int wisdom, int pride_points)
 {
     _name = name;
+    _age = age;
     _strength = constrainIntToRange(strength, 100, 1000);
     _stamina = constrainIntToRange(stamina, 100, 1000);
     _wisdom = constrainIntToRange(wisdom, 100, 1000);
-    _pride_points = 0;
-    _age = 1;
+    _pride_points = pride_points;
 }
 
 string Player::getName()
