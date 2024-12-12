@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Utilities.h"
 #include <iostream>
+#include <iomanip>
 #include <math.h>
 #include <fstream>
 #include <vector>
@@ -11,7 +12,7 @@ using namespace std;
 void displayTitle()
 {
     //const string TITLE_SRC_PATH = "data/TITLE.txt";
-    const string TITLE_SHADOW_SRC_PATH = "data/TITLE_SHADOW.txt";
+    const string TITLE_SHADOW_SRC_PATH = "data/TITLE_A.txt";
 
     ifstream title_src(TITLE_SHADOW_SRC_PATH);
     string current_line = "";
@@ -22,6 +23,7 @@ void displayTitle()
         {
             cout << current_line << endl;
         }
+        cout << endl;
     }
     else
     {
@@ -88,6 +90,7 @@ void displayPlayerSet(vector<Player> characters)
     {
         characters.at(i).printStats();
     }
+    cout << endl;
 }
 
 Player getPlayerFromOptions(vector<Player> options, string prompt)
@@ -105,7 +108,7 @@ Player getPlayerFromOptions(vector<Player> options, string prompt)
                 return options.at(i);
             }
         }
-        cout << "\nThat lion does not exist.\n";
+        Utilities::throwNonexistentLionErrorMsg();
     }
 }
 
@@ -119,19 +122,21 @@ Player choosePlayerPath(Player target_player, string player_name)
     {
     case 1:
         target_player.trainCub(500, 500, 1000);
+        
         break;
     case 2:
         target_player.toPrideLands();
         break;
     default:
-        cout << "??? OW DID WE GET HERE?\nA path index outside of range made it through the system somehow. ???\n\n";
+        cout << "??? HOW DID WE GET HERE?\nA path index outside of range made it through the system somehow. ???\n\n";
         break;
     }
 
     return target_player;
 }
 
-bool gameCycle(Board board);
+// Function that executes bulk of the work; declaration here, definition at bottom for organization
+bool cycleGameUntilEnd(Board board, Player player_1, Player player_2); 
 
 int main()
 {
@@ -154,66 +159,104 @@ int main()
 
     // Create a new board and begin the game
     Board board(2);
-    bool win = gameCycle(board);
+    bool win = cycleGameUntilEnd(board, player_1, player_2);
 
     if (win) cout << "\nSomebody won idk\n\n";
 
     return 0;
 }
 
-bool gameCycle(Board board)
+bool cycleGameUntilEnd(Board board, Player player_1, Player player_2)
 {
-    int turn_index;
-    int player_turn_index = 0;
+    Player players[2] =
+    {
+        player_1,
+        player_2
+    };
+
+    int round = 1;
+    int current_player_index;
 
     while (true)
     {
+        // Set current player, alternate every round
+        current_player_index = round % 2; 
+        Player current_player = players[current_player_index];
+
         // Display round and player info
-        cout << "\nROUND " << turn_index << endl
-             << "PLAYER " << player_turn_index + 1 << "'s TURN\n\n";
+        cout << "********************************************"
+             << "\nROUND " << round << endl
+             << players[current_player_index].getName() << "'s turn (PLAYER " << current_player_index + 1 << ")\n\n";
 
         // Display the board
         board.displayBoard();
 
-        // Prompt player for a command input
-        cout << "\nSelect a command:\n"
-                "0: move forward\n"
-                "1: exit game\n";
-        string input;
-        cin >> input;
-
-        switch (stoi(input))
+        bool end_turn = false;
+        while (!end_turn)
         {
-            case 0:
+            // Prompt player for a command input
+            int input = Utilities::getIntValueInRange(1, 6, "Select a command.\n"
+                                                            "1. ROLL THE DIE: Move forward a 1~6 tiles (\"die\" is the singular of \"dice\" so don't correct me)\n"
+                                                            "2. WHO AM I? View character information.\n"
+                                                            "3. WHERE AM I? Check current position if it isn't obvious from the board.\n"
+                                                            "4. VIEW ADVISOR DATA.\n"
+                                                            "5. Exit Game\n");
+
+            switch (input)
             {
-                turn_index++;
-                cout << "\nSPINNING FOR RANDOM FORWARD MOVEMENT...\n\n";
+            case 1: // ROLL THE DIE
+            {
+                cout << "ROLLING THE DIE...\n\n";
 
                 int rand_move_spaces = rand() % 6 + 1;
 
-                cout << "SPINNER RESULT: Move " << rand_move_spaces << " spaces!\n\n";
+                cout << "\033[48;2;63;63;63m" << "THE DIE HATH DETERMINED YOUR FATE: You will move " << rand_move_spaces << " spaces.\033[0m\n\n";
 
                 for (int i = 0; i < rand_move_spaces; i++)
                 {
-                    bool win = board.movePlayer(player_turn_index);
+                    bool win = board.movePlayer(current_player_index);
                     if (win)
+                    {
                         return true;
+                    }
+                    end_turn = true; // Ends turn.
                 }
                 break;
             }
-            case 1:
+            case 2: // WHO AM I?
             {
-                cout << "\nEXIT GAME";
+                // Doing these things step-by-step aids readability and understandability.
+                // I've found that sometimes the hardest part of writing code is just understanding
+                // what I've already written and maintaining the logic in my own brain...
+                current_player.printStats();
+                cout << endl;
+                break;
+            }
+            case 3: // WHERE AM I?
+            {
+                cout << "You are at tile " << board.getPlayerPosition(current_player_index) << ".\n\n";
+                break;
+            }
+            case 4: // ADVISOR DATA
+            {
+
+                break;
+            }
+            case 5: // Exit Game
+            {
+                cout << "\nYou have exited the game.\n";
                 return false;
             }
             default:
             {
-                cout << "INVALID COMMAND\n";
+                cout << "HOW DID WE GET HERE? A value out of range somehow made it through and you need to go fix it, Jack!\n";
                 break;
             }
+            }
         }
-    
-        player_turn_index = turn_index % 2;
+
+        // Last step: increment round counter
+        round++;
     }
 
     return false;

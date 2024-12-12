@@ -162,7 +162,7 @@ void Board::displayTile(int player_index, int pos)
         color = GREY;
     }
 
-     if (player == true)
+    if (player == true)
     {
         cout << color << "|" << (player_index + 1) << "|" << RESET;
     }
@@ -204,11 +204,11 @@ bool Board::movePlayer(int player_index)
     return false;
 }
 
-// int Board::getPlayerPosition(int player_index) const
-// {
-//     if (player_index >= 0 && player_index <= _player_count)
-//     {
-//         return _player_position[player_index];
-//     }
-//     return -1;
-// }
+int Board::getPlayerPosition(int player_index) const
+{
+    if (player_index >= 0 && player_index <= _player_count)
+    {
+        return _player_position[player_index];
+    }
+    return -1;
+}

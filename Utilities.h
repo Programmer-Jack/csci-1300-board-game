@@ -9,7 +9,7 @@ namespace Utilities
     // Hey look, I made a new Doxygen comment. Learn new skills every day I guess
 
     /// @brief A function that sorts elements of a single string (i.e., a line from a file)
-    /// separated by a delimiter into a string array.
+    /// separated by a delimiter into a string array. Lightly modified from original.
     /// @param input_line 
     /// @param delimiter 
     /// @param line_as_string_array 
@@ -48,7 +48,7 @@ namespace Utilities
                     // add temporary string to the array
                     // set temp to an empty string
                     // check if last string is the longest
-                    else
+                    else 
                     {
                         line_as_string_array[size - 1] = temp;
                         temp = "";
@@ -94,38 +94,53 @@ namespace Utilities
         return true;
     }
 
+    void throwErrorMessage(const string prompts[], unsigned int prompt_count)
+    {
+        unsigned int randIndex = rand() % prompt_count;
+        string prompt = prompts[randIndex];
+        cout << endl << "\033[48;2;255;000;000m" << prompt << "\033[0m" << endl;
+    }
+
+    void throwNonexistentLionErrorMsg()
+    {
+        const string MESSAGES[] = 
+        {
+            "Who?",
+            "Who's that?",
+            "ERROR: NONEXISTENT_LION_EXCEPTION",
+            "Haven't heard the name, sorry.",
+            "Can't say I know who that is.",
+            "Read from the list and try again."
+        };
+        unsigned int msg_count = 6;
+        throwErrorMessage(MESSAGES, msg_count);
+    }
+
     /// @brief Everybody makes mistakes! Tell the player to give it another go.
     void throwInvalidErrorMsg()
     {
-        string messages[] =
+        const string MESSAGES[] =
         {
             "Invalid input. Try again.",
             "Oh nooo, you're stupid! Invalid input.",
-            "Dude come on. Just play the game right. Not that hard.",
+            "Play the game right and we can both get this over with.",
             "Did you ever learn how to use a keyboard?"
         };
-
-        // HAD ISSUES WHERE static_cast<int>(sizeof(messages)) MESSED UP THE OUTPUT. FOR NOW USE INT LITERAL
-        unsigned int randIndex = rand() % 4;
-
-        cout << endl << messages[randIndex] << endl << endl;
+        unsigned int msg_count = 4;
+        throwErrorMessage(MESSAGES, msg_count);
     }
 
     void throwOutOfRangeErrorMsg()
     {
-        string messages[] =
+        const string MESSAGES[] =
         {
             "Not in range. Try again.",
             "Read your options again and give it another shot.",
-            "Come ON now we don't have TIME for this",
-            "THAT ISN'T AN OPTION WHY DID YOU TYPE THAT",
-            "You've failed me"
+            "Come on now quit playing around and input a legitimate option",
+            "Why did you type that? That's not a choice I gave you."
         };
-
-        // HAD ISSUES WHERE static_cast<int>(sizeof(messages)) MESSED UP THE OUTPUT. FOR NOW USE INT LITERAL
-        unsigned int randIndex = rand() % 5;
-
-        cout << endl << messages[randIndex] << endl << endl;
+        unsigned int msg_count = 4;
+        throwErrorMessage(MESSAGES, msg_count);
     }
 
     int getIntValueInRange(int min, int max, string prompt)
@@ -135,6 +150,7 @@ namespace Utilities
             cout << endl << prompt << endl;
             string input;
             cin >> input;
+            cout << endl;
 
             if (!validateInt(input))
             {
@@ -146,7 +162,7 @@ namespace Utilities
 
                 if (selected_index < min || selected_index > max)
                 {
-                    Utilities::throwOutOfRangeErrorMsg();
+                    throwOutOfRangeErrorMsg();
                 }
                 else
                 {

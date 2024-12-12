@@ -3,11 +3,6 @@
 #include <iomanip>
 using namespace std;
 
-/*
-string _name;
-int _strength, _stamina, _wisdom, _pride_points, _age;
-*/
-
 Player::Player()
 {
     _name = "";
@@ -107,11 +102,11 @@ void Player::toPrideLands()
 void Player::printStats()
 {
     cout << "##############################\n"
-         << "# " << _name << ", age " << _age << fixed << setw(22 - static_cast<int>(_name.length())) << " #\n"
-         << "# Strength: " << fixed << setw(16) <<                                          _strength << " #\n"
-         << "# Stamina: " << fixed << setw(17) <<                                            _stamina << " #\n"
-         << "# Wisdom: " << fixed << setw(18) <<                                              _wisdom << " #\n"
-         << "# Pride Points: " << fixed << setw(12) <<                                  _pride_points << " #\n"
+         << "# " << _name << ", age " << _age << fixed << setw(23 - static_cast<int>(_name.length() + (_age >= 10 ? 2 : 1))) << " #\n"
+         << "# Strength: " << setw(16) <<                                          _strength << " #\n"
+         << "# Stamina: " << setw(17) <<                                            _stamina << " #\n"
+         << "# Wisdom: " << setw(18) <<                                              _wisdom << " #\n"
+         << "# Pride Points: " << setw(12) <<                                  _pride_points << " #\n"
          << "##############################\n";
 }
 
