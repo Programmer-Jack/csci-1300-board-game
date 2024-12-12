@@ -98,7 +98,7 @@ namespace Utilities
     {
         unsigned int randIndex = rand() % prompt_count;
         string prompt = prompts[randIndex];
-        cout << endl << "\033[48;2;255;000;000m" << prompt << "\033[0m" << endl;
+        cout << endl << "\033[48;2;200;000;000m" << prompt << "\033[0m" << endl;
     }
 
     void throwNonexistentLionErrorMsg()

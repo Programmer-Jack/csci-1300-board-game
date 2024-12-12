@@ -1,0 +1,6 @@
+id|name|description
+1|Rafiki|Invisibility
+2|Nala|Night Vision
+3|Sarabi|Energy Stimulant
+4|Zazu|Weather Manipulation
+5|Sarafina|Ultraspeed
